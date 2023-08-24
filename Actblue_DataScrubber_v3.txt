@@ -1,0 +1,2506 @@
+Sub Actblue_datascrubber()
+'
+' Actblue_datascrubber Macro
+
+
+                '''''ActBlue Macro'''''
+    
+'''Format to Reference Columns & Denote Ranges/Variables'''
+
+'identify the active sheet
+
+    ActiveSheet.Name = "Cleaned data"
+
+
+'make a copy of the sheet and label it unedited_data
+
+Sheets("Cleaned Data").Select
+    Sheets("Cleaned Data").Copy After:=Sheets(1)
+    Sheets("Cleaned Data (2)").Select
+    Sheets("Cleaned Data (2)").Name = "unedited_data"
+    
+'start editing the first sheet
+    Sheets("Cleaned Data").Select
+    
+'Insert Middle Name, Address(Unedited),
+'Occupation(Unedited), Employer(Unedited) Columns
+
+    Range("$S$1").EntireColumn.Insert
+    Range("$S$1").Value = "Employer(Unedited)"
+    
+    Range("$S$1").EntireColumn.Insert
+    Range("$S$1").Value = "Occupation(Unedited)"
+    
+    Range("$M$1").EntireColumn.Insert
+    Range("$M$1").Value = "Address(Unedited)"
+    
+    Range("$M$1").EntireColumn.Insert
+    Range("$M$1").Value = "Suffix"
+    
+    Range("$L$1").EntireColumn.Insert
+    Range("$L$1").Value = "MiddleName"
+    
+'Rename Columns to Reference Names
+
+    Range("$B$1").Value = "Date2"
+    Range("$K$1").Value = "FirstName"
+    Range("$M$1").Value = "LastName"
+    Range("$P$1").Value = "Address1"
+    Range("$Q$1").Value = "Address2"
+    Range("$R$1").Value = "City"
+    Range("$S$1").Value = "State"
+    Range("$T$1").Value = "ZIP"
+    Range("$U$1").Value = "Country"
+    Range("$X$1").Value = "Occupation"
+    Range("$Y$1").Value = "Employer"
+    Range("$Z$1").Value = "Email"
+    Range("$AA$1").Value = "Phone"
+    Range("$AE$1").Value = "Date1"
+    
+'Reference Guide for Column Names & Information
+
+    'Column B = Date -> Date2
+    'Column C = Amount
+    'Column K = Donor First Name -> FirstName
+    'Column L = MiddleName
+    'Column M = Donor Last Name -> LastName
+    'Column N = Suffix
+    'Column O = Address(Unedited)
+    'Column P = Donor Addr1 -> Address1
+    'Column Q = Donor Addr2 -> Address2
+    'Column R = Donor City -> City
+    'Column S = Donor State -> State
+    'Column T = Donor ZIP -> ZIP
+    'Column U = Donor Country -> Country
+    'Column V = Occupation(Unedited)
+    'Column W = Employer(Unedited)
+    'Column X = Donor Occupation -> Occupation
+    'Column Y = Donor Employer -> Employer
+    'Column Z = Donor Email -> Email
+    'Column AA = Donor Phone -> Phone
+    'Column AE = Check Date -> Date1
+    
+    'Determine LastRow of Data
+    Dim LastRow As Long
+    LastRow = ActiveSheet.Range("A" & Rows.Count).End(xlUp).Row
+    
+'Denote Ranges & Variables
+    
+    Dim Date2R As Range
+    
+    Dim FirstNameR As Range
+    Dim FirstNameRT As Range
+    Dim FirstNameV As Variant
+    
+    Dim MiddleNameR As Range
+    Dim MiddleNameRT As Range
+    Dim MiddleNameV As Variant
+    
+    Dim LastNameR As Range
+    Dim LastNameV As Variant
+    
+    Dim SuffixR As Range
+    Dim SuffixV As Variant
+    
+    Dim AddressUneditedR As Range
+    Dim Address1R As Range
+    Dim Address1RT As Range
+    Dim Address1V As Variant
+    
+    Dim Address2R As Range
+    Dim Address2RT As Range
+    Dim Address2V As Variant
+    
+    Dim CityR As Range
+    Dim CityV As Variant
+    
+    Dim StateR As Range
+    Dim StateV As Variant
+    
+    Dim ZipR As Range
+    Dim ZipV As Variant
+    
+    Dim CountryR As Range
+        
+    Dim OccupationUneditedR As Range
+    Dim OccupationR As Range
+    Dim OccupationV As Variant
+    Dim OccupationL As Long
+    
+    Dim EmployerUneditedR As Range
+    Dim EmployerR As Range
+    Dim EmployerV As Variant
+    Dim EmployerL As Long
+    Dim EmployerCaseL As Long
+    Dim L As Long
+    
+    Dim OccupationEmployerR As Range
+    Dim OccupationEmployerV As Variant
+    
+    Dim EmailR As Range
+    Dim EmailV As Variant
+    
+    Dim PhoneR As Range
+    Dim PhoneR1 As Range
+    Dim PhoneV As Variant
+    
+    'Combination Ranges
+    Dim TrimR As Range
+    Dim TrimV As Variant
+    
+    Dim ProperCaseR As Range
+    Dim ProperCaseV As Variant
+    Dim ProperCaseTrimV As Variant
+    
+'''Fill "Unedited" Columns'''
+    
+    'Address(Unedited)
+    Set AddressUneditedR = Range("O2:O" & LastRow)
+    Set Address1R = Range("P2:P" & LastRow)
+    Address1R.Copy
+    AddressUneditedR.Select
+    ActiveSheet.Paste
+    
+    'Occupation(Unedited)
+    Set OccupationUneditedR = Range("V2:V" & LastRow)
+    Set OccupationR = Range("X2:X" & LastRow)
+    OccupationR.Copy
+    OccupationUneditedR.Select
+    ActiveSheet.Paste
+    
+    'Employer(Unedited)
+    Set EmployerUneditedR = Range("W2:W" & LastRow)
+    Set EmployerR = Range("Y2:Y" & LastRow)
+    EmployerR.Copy
+    EmployerUneditedR.Select
+    ActiveSheet.Paste
+   
+'''Trim All Columns'''
+
+    'Set TrimR Range
+    Set FirstNameR = Range("K2:K" & LastRow)
+    Set LastNameR = Range("M2:M" & LastRow)
+    Set Address1R = Range("P2:P" & LastRow)
+    Set CityR = Range("R2:R" & LastRow)
+    Set StateR = Range("S2:S" & LastRow)
+    Set OccupationR = Range("X2:X" & LastRow)
+    Set EmployerR = Range("Y2:Y" & LastRow)
+    Set EmailR = Range("Z2:Z" & LastRow)
+    Set TrimR = Union(FirstNameR, LastNameR, Address1R, _
+        CityR, StateR, OccupationR, EmployerR, EmailR)
+    
+    'TrimR Trim
+    For Each TrimV In TrimR
+        If Len(TrimV) > Len(WorksheetFunction.Trim(TrimV)) Then
+            TrimV.Value = WorksheetFunction.Trim(TrimV)
+        End If
+    On Error Resume Next
+    Next TrimV
+    
+    'Date Received By Trans Committee Format
+    Set Date2R = Range("B2:B" & LastRow)
+    
+    Date2R.Select
+    
+    Selection.NumberFormat = "m/d/yyyy"
+    
+'''Case Corrections'''
+
+'EmployerR Case Correction
+    
+    For EmployerCaseL = 2 To LastRow
+        If Range("X" & EmployerCaseL).Value <> Application.Proper(Range("X" & EmployerCaseL).Value) Then
+            Range("Y" & EmployerCaseL).Value = Application.Proper(Range("Y" & EmployerCaseL).Value)
+        End If
+    Next EmployerCaseL
+    
+'ProperCaseR Correction
+
+    'Set ProperCaseR
+    Set FirstNameR = Range("K2:K" & LastRow)
+    Set LastNameR = Range("M2:M" & LastRow)
+    Set Address1R = Range("P2:P" & LastRow)
+    Set CityR = Range("R2:R" & LastRow)
+    Set OccupationR = Range("X2:X" & LastRow)
+    Set ProperCaseR = Union(FirstNameR, LastNameR, Address1R, _
+        CityR, OccupationR)
+    
+    'ProperCaseR Proper Case
+    For Each ProperCaseV In ProperCaseR
+        If ProperCaseV.Value <> Application.Proper(ProperCaseV.Value) Then
+            ProperCaseV.Value = Application.Proper(ProperCaseV.Value)
+        End If
+    Next ProperCaseV
+    
+    'ProperCaseR Correct Articles & Mc
+    ProperCaseR.Replace What:=" and ", Replacement:=" and ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:=" or ", Replacement:=" or ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:=" the ", Replacement:=" the ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:=" a ", Replacement:=" a ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:=" an ", Replacement:=" an ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:=" of ", Replacement:=" of ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:=" to ", Replacement:=" to ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:=" for ", Replacement:=" for ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="'s", Replacement:="'s", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="..", Replacement:=".", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="  ", Replacement:=" ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mca", Replacement:="McA", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcb", Replacement:="McB", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcc", Replacement:="McC", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcd", Replacement:="McD", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mce", Replacement:="McE", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcf", Replacement:="McF", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcg", Replacement:="McG", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mch", Replacement:="McH", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mci", Replacement:="McI", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcj", Replacement:="McJ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mck", Replacement:="McK", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcl", Replacement:="McL", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcm", Replacement:="McM", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcn", Replacement:="McN", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mco", Replacement:="McO", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcp", Replacement:="McP", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcq", Replacement:="McQ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcr", Replacement:="McR", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcs", Replacement:="McS", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mct", Replacement:="McT", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcu", Replacement:="McU", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcv", Replacement:="McV", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcw", Replacement:="McW", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcx", Replacement:="McX", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcy", Replacement:="McY", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="Mcz", Replacement:="McZ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    ProperCaseR.Replace What:="1st", Replacement:="1st", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="2nd", Replacement:="2nd", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="3rd", Replacement:="3rd", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="4th", Replacement:="4th", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="5th", Replacement:="5th", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="6th", Replacement:="6th", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="7th", Replacement:="7th", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="8th", Replacement:="8th", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="9th", Replacement:="9th", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="0th", Replacement:="0th", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="1th", Replacement:="1th", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="2th", Replacement:="2th", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    ProperCaseR.Replace What:="3th", Replacement:="3th", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    'ProperCaseR Trim
+    For Each ProperCaseTrimV In ProperCaseR
+        If Len(ProperCaseTrimV) > Len(WorksheetFunction.Trim(ProperCaseTrimV)) Then
+            ProperCaseTrimV.Value = WorksheetFunction.Trim(ProperCaseTrimV)
+        End If
+    Next ProperCaseTrimV
+    
+'StateR Uppercase
+    
+    'Set StateR
+    Set StateR = Range("S2:S" & LastRow)
+    
+    'StateR UpperCase
+    For Each StateV In StateR
+        If StateV.Value <> UCase(StateV.Value) Then
+            StateV.Value = UCase(StateV.Value)
+        End If
+    Next StateV
+    
+'EmailR Lowercase
+    
+    'Set EmailR
+    Set EmailR = Range("Z2:Z" & LastRow)
+    
+    'EmailR Lowercase
+    For Each EmailV In EmailR
+        If EmailV.Value <> LCase(EmailV.Value) Then
+            EmailV.Value = LCase(EmailV.Value)
+        End If
+    Next EmailV
+
+'''Name Corrections'''
+
+'FirstNameR & MiddleNameR Split
+
+    'Insert Catch Columns
+    Range("$M$1").EntireColumn.Insert
+    Range("$M$1").EntireColumn.Insert
+    Range("$M$1").EntireColumn.Insert
+    Range("$M$1").EntireColumn.Insert
+    
+    'Set FirstNameR
+    Set FirstNameR = Range("K2:K" & LastRow)
+    
+    'Text to Column
+    FirstNameR.TextToColumns _
+    Destination:=FirstNameR, DataType:=xlDelimited, _
+    ConsecutiveDelimiter:=True, Space:=True, Other:=True, _
+    OtherChar:="."
+    
+    'Insert MiddleNameR Column
+    Range("$L$1" & LastRow).EntireColumn.Insert
+    Range("$L$1").Value = "MiddleName"
+    
+    'Set MiddleNameR
+    Set MiddleNameR = Range("L2:L" & LastRow)
+    
+    'Formula & Paste
+    MiddleNameR.Formula = "=M2&"" ""&N2&"" ""&O2&"" ""&P2&"" ""&Q2"
+    MiddleNameR.Select
+    Selection.Copy
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+    :=False, Transpose:=False
+    Application.CutCopyMode = False
+    
+    'Delete Catch Columns
+    Columns("M").EntireColumn.Delete
+    Columns("M").EntireColumn.Delete
+    Columns("M").EntireColumn.Delete
+    Columns("M").EntireColumn.Delete
+    Columns("M").EntireColumn.Delete
+    
+    'Set FirstNameR & MiddleNameR
+    Set FirstNameR = Range("K2:K" & LastRow)
+    Set MiddleNameR = Range("L2:L" & LastRow)
+    
+    'FirstNameR & MiddleNameR Remove Commas
+    FirstNameR.Replace What:=",", Replacement:=" ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    MiddleNameR.Replace What:=",", Replacement:=" ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    'FirstNameR & MiddleNameR Trim
+    For Each FirstNameV In FirstNameR
+        If Len(FirstNameV) > Len(WorksheetFunction.Trim(FirstNameV)) Then
+            FirstNameV.Value = WorksheetFunction.Trim(FirstNameV)
+        End If
+    Next FirstNameV
+    
+    For Each MiddleNameV In MiddleNameR
+        If Len(MiddleNameV) > Len(WorksheetFunction.Trim(MiddleNameV)) Then
+            MiddleNameV.Value = WorksheetFunction.Trim(MiddleNameV)
+        End If
+    Next MiddleNameV
+    
+    MiddleNameR.Replace What:=" ", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    MiddleNameR.Replace What:="  ", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    MiddleNameR.Replace What:="   ", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    'FirstNameR & MiddleNameR Add Periods
+    For Each FirstNameV In FirstNameR
+        If Len(FirstNameV) = 1 Then
+            FirstNameV.Value = FirstNameV.Value & "."
+        End If
+    Next FirstNameV
+    
+    For Each MiddleNameV In MiddleNameR
+        If Len(MiddleNameV) = 1 Then
+            MiddleNameV.Value = MiddleNameV.Value & "."
+        End If
+    Next MiddleNameV
+    
+    'MiddleNameR Highlights
+    MiddleNameR.FormatConditions.Add Type:=xlTextString, String:=" ", _
+        TextOperator:=xlContains
+    MiddleNameR.FormatConditions(MiddleNameR.FormatConditions.Count).SetFirstPriority
+    With MiddleNameR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    MiddleNameR.FormatConditions(1).StopIfTrue = False
+    
+'LastNameR & SuffixR Split
+
+    'Insert Catch Columns for Extra Suffix
+    Range("$O$1").EntireColumn.Insert
+    Range("$O$1").EntireColumn.Insert
+    Range("$O$1").EntireColumn.Insert
+    Range("$O$1").EntireColumn.Insert
+    
+    'Set LastNameR
+    Set LastNameR = Range("M2:M" & LastRow)
+    
+    'LastNameR Delimiter
+    LastNameR.Replace What:=" jr", Replacement:="#Jr.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" jr.", Replacement:="#Jr.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" junior", Replacement:="#Jr.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    LastNameR.Replace What:=" sr", Replacement:="#Sr.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" sr.", Replacement:="#Sr.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" senior", Replacement:="#Sr.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    LastNameR.Replace What:=" ii", Replacement:="#II", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" iii", Replacement:="#III", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" iv", Replacement:="#IV", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    LastNameR.Replace What:=" ph.d.", Replacement:="#Ph.D.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" ph.d", Replacement:="#Ph.D.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" phd.", Replacement:="#Ph.D.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" p.hd", Replacement:="#Ph.D.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" p.h.d.", Replacement:="#Ph.D.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" phd", Replacement:="#Ph.D.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+
+    LastNameR.Replace What:=" m.d.", Replacement:="#M.D.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" md.", Replacement:="#M.D.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" m.d", Replacement:="#M.D.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    LastNameR.Replace What:=" md", Replacement:="#M.D.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    'LastNameR Text to Column
+    LastNameR.TextToColumns _
+    Destination:=LastNameR, DataType:=xlDelimited, _
+    ConsecutiveDelimiter:=True, Space:=False, Other:=True, _
+    OtherChar:="#", OtherChar:=","
+    
+    'Insert SuffixR Column
+    Range("$N$1").EntireColumn.Insert
+    Range("$N$1").Value = "Suffix"
+    
+    'Set LastNameR & SuffixR
+    Set LastNameR = Range("M2:M" & LastRow)
+    Set SuffixR = Range("N2:N" & LastRow)
+    
+    'Formula & Paste Values
+    SuffixR.Value = "=O2&"" ""&P2&"" ""&Q2&"" ""&R2&"" ""&S2"
+    SuffixR.Select
+    Selection.Copy
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+    :=False, Transpose:=False
+    Application.CutCopyMode = False
+    
+    'Delete Catch Columns
+    Columns("O").EntireColumn.Delete
+    Columns("O").EntireColumn.Delete
+    Columns("O").EntireColumn.Delete
+    Columns("O").EntireColumn.Delete
+    Columns("O").EntireColumn.Delete
+    
+    'Set LastNameR & SuffixR
+    Set LastNameR = Range("M2:M" & LastRow)
+    Set SuffixR = Range("N2:N" & LastRow)
+    
+    'LastNameR & SuffixR Replacements
+    LastNameR.Replace What:=",", Replacement:=" ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    SuffixR.Replace What:=",", Replacement:=" ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    SuffixR.Replace What:="..", Replacement:=".", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    SuffixR.Replace What:=". .", Replacement:=".", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+
+    'LastNameR & SuffixR Trim
+    For Each LastNameV In LastNameR
+        If Len(LastNameV) > Len(WorksheetFunction.Trim(LastNameV)) Then
+            LastNameV.Value = WorksheetFunction.Trim(LastNameV)
+        End If
+    Next LastNameV
+
+    For Each SuffixV In SuffixR
+        If Len(SuffixV) > Len(WorksheetFunction.Trim(SuffixV)) Then
+            SuffixV.Value = WorksheetFunction.Trim(SuffixV)
+        End If
+    Next SuffixV
+    
+    SuffixR.Replace What:=" ", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    SuffixR.Replace What:="  ", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    SuffixR.Replace What:="   ", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    SuffixR.Replace What:="ii", Replacement:="II", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    SuffixR.Replace What:="iii", Replacement:="III", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    SuffixR.Replace What:="iv", Replacement:="IV", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    'LastNameR Highlights
+    LastNameR.FormatConditions.Add Type:=xlTextString, String:=" ", _
+        TextOperator:=xlContains
+    LastNameR.FormatConditions(LastNameR.FormatConditions.Count).SetFirstPriority
+    With LastNameR.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    LastNameR.FormatConditions(1).StopIfTrue = False
+        LastNameR.FormatConditions.Add Type:=xlTextString, String:=",", _
+        TextOperator:=xlContains
+    LastNameR.FormatConditions(LastNameR.FormatConditions.Count).SetFirstPriority
+    With LastNameR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    LastNameR.FormatConditions(1).StopIfTrue = False
+    LastNameR.FormatConditions.Add Type:=xlTextString, String:=".", _
+        TextOperator:=xlContains
+    LastNameR.FormatConditions(LastNameR.FormatConditions.Count).SetFirstPriority
+    With LastNameR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    LastNameR.FormatConditions(1).StopIfTrue = False
+    
+    'SuffixR Highlights
+    SuffixR.FormatConditions.Add Type:=xlTextString, String:="????", _
+        TextOperator:=xlContains
+    SuffixR.FormatConditions(SuffixR.FormatConditions.Count).SetFirstPriority
+    With SuffixR.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    SuffixR.FormatConditions(1).StopIfTrue = False
+    SuffixR.FormatConditions.Add Type:=xlTextString, String:="?????", _
+        TextOperator:=xlContains
+    SuffixR.FormatConditions(SuffixR.FormatConditions.Count).SetFirstPriority
+    With SuffixR.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    SuffixR.FormatConditions(1).StopIfTrue = False
+    
+    SuffixR.FormatConditions.Add Type:=xlTextString, String:=" ", _
+        TextOperator:=xlContains
+    SuffixR.FormatConditions(SuffixR.FormatConditions.Count).SetFirstPriority
+    With SuffixR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    SuffixR.FormatConditions(1).StopIfTrue = False
+    SuffixR.FormatConditions.Add Type:=xlTextString, String:="??????", _
+        TextOperator:=xlContains
+    SuffixR.FormatConditions(SuffixR.FormatConditions.Count).SetFirstPriority
+    With SuffixR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    SuffixR.FormatConditions(1).StopIfTrue = False
+
+'''Address Corrections'''
+
+    'Set AddressLine1R
+    Set Address1R = Range("P2:P" & LastRow)
+    
+    'Add End Space
+    For Each Address1V In Address1R
+        Address1V.Value = Address1V.Value & " "
+    Next Address1V
+    
+    'Address1R Replace
+    Address1R.Replace What:=".", Replacement:=" ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    Address1R.Replace What:=" road ", Replacement:=" Rd ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" street ", Replacement:=" St ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" lane ", Replacement:=" Ln ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" court ", Replacement:=" Ct ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" circle ", Replacement:=" Cir ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" avenue ", Replacement:=" Ave ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Av ", Replacement:=" Ave ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" drive ", Replacement:=" Dr ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" boulevard ", Replacement:=" Blvd ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" terrace ", Replacement:=" Ter ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" terr ", Replacement:=" Ter ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" place ", Replacement:=" Pl ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" trail ", Replacement:=" Trl ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" parkway ", Replacement:=" Pkwy ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    Address1R.Replace What:=" road, ", Replacement:=" Rd ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" street, ", Replacement:=" St ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" lane, ", Replacement:=" Ln ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" court, ", Replacement:=" Ct ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" circle, ", Replacement:=" Cir ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" avenue, ", Replacement:=" Ave ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" drive, ", Replacement:=" Dr ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" boulevard, ", Replacement:=" Blvd ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" terrace, ", Replacement:=" Ter ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" terr, ", Replacement:=" Ter ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" place, ", Replacement:=" Pl ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" trail, ", Replacement:=" Trl ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" parkway, ", Replacement:=" Pkwy ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    Address1R.Replace What:=" nw ", Replacement:=" NW ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" n w ", Replacement:=" NW ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" sw ", Replacement:=" SW ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" s w ", Replacement:=" SW ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" se ", Replacement:=" SE ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" s e ", Replacement:=" SE ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" ne ", Replacement:=" NE ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" n e ", Replacement:=" NE ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" So ", Replacement:=" S ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    Address1R.Replace What:=" nw,", Replacement:=" NW ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" sw,", Replacement:=" SW ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" se,", Replacement:=" SE ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" ne,", Replacement:=" NE ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    Address1R.Replace What:=" 1st Floor ", Replacement:=" #Fl 1 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" 2nd Floor ", Replacement:=" #Fl 2 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" 3rd Floor ", Replacement:=" #Fl 3 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" 4th Floor ", Replacement:=" #Fl 4 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" 5th Floor ", Replacement:=" #Fl 5 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" 6th Floor ", Replacement:=" #Fl 6 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" 7th Floor ", Replacement:=" #Fl 7 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" 8th Floor ", Replacement:=" #Fl 8 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" 9th Floor ", Replacement:=" #Fl 9 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" 10th Floor ", Replacement:=" #Fl 10 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" 11th Floor ", Replacement:=" #Fl 11 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" 12th Floor ", Replacement:=" #Fl 12 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" 13th Floor ", Replacement:=" #Fl 13 ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    Address1R.Replace What:=", Floor ", Replacement:="#Fl ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=", Floor", Replacement:="#Fl ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Flr ", Replacement:="#Fl ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=", Fl. ", Replacement:="#Fl ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=", Fl.", Replacement:="#Fl ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=", Fl ", Replacement:="#Fl ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    Address1R.Replace What:=" First ", Replacement:=" 1st ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Second ", Replacement:=" 2nd ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Third ", Replacement:=" 3rd ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Fourth ", Replacement:=" 4th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Fifth ", Replacement:=" 5th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Sixth ", Replacement:=" 6th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Seventh ", Replacement:=" 7th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Eighth ", Replacement:=" 8th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Ninth ", Replacement:=" 9th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Tenth ", Replacement:=" 10th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Eleventh ", Replacement:=" 11th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Twelfth ", Replacement:=" 12th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Thirteenth ", Replacement:=" 13th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    Address1R.Replace What:=" First,", Replacement:=" 1st ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Second,", Replacement:=" 2nd ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Third,", Replacement:=" 3rd ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Fourth,", Replacement:=" 4th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Fifth,", Replacement:=" 5th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Sixth,", Replacement:=" 6th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Seventh,", Replacement:=" 7th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Eighth,", Replacement:=" 8th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Ninth,", Replacement:=" 9th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Tenth,", Replacement:=" 10th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Eleventh,", Replacement:=" 11th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Twelfth,", Replacement:=" 12th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" Thirteenth,", Replacement:=" 13th ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    Address1R.Replace What:="p o ", Replacement:="PO ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:="po ", Replacement:="PO ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:="pobox", Replacement:="PO Box", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:="pob", Replacement:="PO Box", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:="po bx", Replacement:="PO Box", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:="po boxox", Replacement:="PO Box", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:="P O Box", Replacement:="PO Box", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:="P. O. Box", Replacement:="PO Box", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:="P  O Box", Replacement:="PO Box", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:="'s", Replacement:="'s", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    Address1R.Replace What:="#", Replacement:="#Apt ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" apt", Replacement:="#Apt ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=",apt", Replacement:="#Apt ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" apartment", Replacement:="#Apt ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:="##", Replacement:="#Apt ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:="# #", Replacement:="#Apt ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" suite", Replacement:="#Ste ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" ste ", Replacement:="#Ste ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" space ", Replacement:="#Spc ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" spc ", Replacement:="#Spc ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" lot ", Replacement:="#lot ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" unit", Replacement:="#Unit ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:=" ph ", Replacement:=" #PH ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+
+    Address1R.Replace What:="`", Replacement:="", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    'Put Directional Replacements right here*****
+    
+    'Address1R Trim
+    For Each Address1V In Address1R
+        If Len(Address1V) > Len(WorksheetFunction.Trim(Address1V)) Then
+            Address1V.Value = WorksheetFunction.Trim(Address1V)
+        End If
+    Next Address1V
+    
+'Address1R Text to Columns
+
+    'Insert Catch Columns
+    Range("$R$1").EntireColumn.Insert
+    Range("$R$1").EntireColumn.Insert
+    
+    'Set Address1R
+    Set Address1R = Range("P2:P" & LastRow)
+    
+    'Address1R Text to Column
+    Address1R.TextToColumns _
+    Destination:=Address1R, DataType:=xlDelimited, _
+    ConsecutiveDelimiter:=True, Space:=False, Other:=True, OtherChar:="#"
+    
+    'Insert Address2R
+    Range("$Q$1").EntireColumn.Insert
+    Range("$Q$1").Value = "Address2"
+    
+    'Set AddressLine2R
+    Set Address2R = Range("Q2:Q" & LastRow)
+    
+    'Address2R Formula & Paste Values
+    Address2R.Formula = "=R2&"" ""&S2&"" ""&T2"
+    Address2R.Select
+    Selection.Copy
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+    :=False, Transpose:=False
+    Application.CutCopyMode = False
+    
+    'Delete Catch Columns
+    Columns("R").EntireColumn.Delete
+    Columns("R").EntireColumn.Delete
+    Columns("R").EntireColumn.Delete
+    
+'Address1R & Address2R Trim
+
+    'Set Address1R & Address2R
+    Set Address1R = Range("P2:P" & LastRow)
+    Set Address2R = Range("Q2:Q" & LastRow)
+    
+    'Address1R & Address2R Trim
+    For Each Address1V In Address1R
+        If Len(Address1V) > Len(WorksheetFunction.Trim(Address1V)) Then
+            Address1V.Value = WorksheetFunction.Trim(Address1V)
+        End If
+    Next
+    
+    For Each Address2V In Address2R
+        If Len(Address2V) > Len(WorksheetFunction.Trim(Address2V)) Then
+            AddressV.Value = WorksheetFunction.Trim(Address2V)
+        End If
+    Next
+    
+    'Address1R & Address2R Remove Trailing Commas, Dashes, Slashes
+    For Each Address1V In Address1R
+        If Right(Address1V, 1) = "," Then
+            Address1V.Value = Left(Address1V, Len(Address1V) - 1)
+        End If
+    Next
+    
+    For Each Address2V In Address2R
+        If Right(Address2V, 1) = "," Then
+            Address2V.Value = Left(Address2V, Len(Address2V) - 1)
+        End If
+    Next
+    
+    For Each Address1V In Address1R
+        If Right(Address1V, 1) = "-" Then
+            Address1V.Value = Left(Address1V, Len(Address1V) - 1)
+        End If
+    Next
+    
+    For Each Address2V In Address2R
+        If Right(Address2V, 1) = "-" Then
+            Address2V.Value = Left(Address2V, Len(Address2V) - 1)
+        End If
+    Next
+    
+    For Each Address1V In Address1R
+        If Right(Address1V, 1) = "/" Then
+            Address1V.Value = Left(Address1V, Len(Address1V) - 1)
+        End If
+    Next
+    
+    For Each Address2V In Address2R
+        If Right(Address2V, 1) = "/" Then
+            Address2V.Value = Left(Address2V, Len(Address2V) - 1)
+        End If
+    Next
+    
+    'Address1R Replacements (After Text to Column)
+    Address1R.Replace What:="Ter Hgts", Replacement:="Terrace Hgts", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address1R.Replace What:="Cir Ln", Replacement:="Circle Ln", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    'Address2R Replacements
+    Address2R.Replace What:="Apt Apt", Replacement:="Apt", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address2R.Replace What:="Unit Apt", Replacement:="Unit", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address2R.Replace What:=" ", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address2R.Replace What:="  ", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Address2R.Replace What:="   ", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+   
+    'West Newton Fix
+    Dim I As Long
+    For I = 2 To LastRow
+        If Range("P" & I).Value = "70 Greylock Rd West Newton" Then
+            Range("P" & I).Value = "70 Greylock Rd"
+            Range("R" & I).Value = "West Newton"
+        End If
+    Next I
+    
+'Address1R & Address2R Highlights
+
+    'Address1R Highlights
+    Address1R.FormatConditions.Add Type:=xlTextString, String:="-", _
+        TextOperator:=xlContains
+    Address1R.FormatConditions(Address1R.FormatConditions.Count).SetFirstPriority
+    With Address1R.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    Address1R.FormatConditions(1).StopIfTrue = False
+    
+    Address1R.FormatConditions.Add Type:=xlTextString, String:=" ste", _
+        TextOperator:=xlContains
+    Address1R.FormatConditions(Address1R.FormatConditions.Count).SetFirstPriority
+    With Address1R.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    Address1R.FormatConditions(1).StopIfTrue = False
+    
+    Address1R.FormatConditions.Add Type:=xlTextString, String:="north", _
+        TextOperator:=xlContains
+    Address1R.FormatConditions(Address1R.FormatConditions.Count).SetFirstPriority
+    With Address1R.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    Address1R.FormatConditions(1).StopIfTrue = False
+    Address1R.FormatConditions.Add Type:=xlTextString, String:="south", _
+        TextOperator:=xlContains
+    Address1R.FormatConditions(Address1R.FormatConditions.Count).SetFirstPriority
+    With Address1R.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    Address1R.FormatConditions(1).StopIfTrue = False
+    Address1R.FormatConditions.Add Type:=xlTextString, String:="east", _
+        TextOperator:=xlContains
+    Address1R.FormatConditions(Address1R.FormatConditions.Count).SetFirstPriority
+    With Address1R.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    Address1R.FormatConditions(1).StopIfTrue = False
+    Address1R.FormatConditions.Add Type:=xlTextString, String:="west", _
+        TextOperator:=xlContains
+    Address1R.FormatConditions(Address1R.FormatConditions.Count).SetFirstPriority
+    With Address1R.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    Address1R.FormatConditions(1).StopIfTrue = False
+    Address1R.FormatConditions.Add Type:=xlTextString, String:="/", _
+        TextOperator:=xlContains
+    Address1R.FormatConditions(Address1R.FormatConditions.Count).SetFirstPriority
+    With Address1R.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    Address1R.FormatConditions(1).StopIfTrue = False
+    
+    Address1R.FormatConditions.Add Type:=xlTextString, String:=",", _
+        TextOperator:=xlContains
+    Address1R.FormatConditions(Address1R.FormatConditions.Count).SetFirstPriority
+    With Address1R.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    Address1R.FormatConditions(1).StopIfTrue = False
+
+    Address1R.FormatConditions.Add Type:=xlTextString, String:="Apt", _
+        TextOperator:=xlContains
+    Address1R.FormatConditions(Address1R.FormatConditions.Count).SetFirstPriority
+    With Address1R.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    Address1R.FormatConditions(1).StopIfTrue = False
+    Address1R.FormatConditions.Add Type:=xlTextString, String:="suite", _
+        TextOperator:=xlContains
+    Address1R.FormatConditions(Address1R.FormatConditions.Count).SetFirstPriority
+    With Address1R.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    Address1R.FormatConditions(1).StopIfTrue = False
+
+    Address1R.FormatConditions.Add Type:=xlTextString, String:="unit", _
+        TextOperator:=xlContains
+    Address1R.FormatConditions(Address1R.FormatConditions.Count).SetFirstPriority
+    With Address1R.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    Address1R.FormatConditions(1).StopIfTrue = False
+    
+    Address1R.FormatConditions.Add Type:=xlTextString, String:="*", _
+        TextOperator:=xlDoesNotContain
+    Address1R.FormatConditions(Address1R.FormatConditions.Count).SetFirstPriority
+    With Address1R.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    Address1R.FormatConditions(1).StopIfTrue = False
+    
+    'Address2R Highlights
+    Address2R.FormatConditions.Add Type:=xlTextString, String:="* * *", _
+        TextOperator:=xlContains
+    Address2R.FormatConditions(AddressLine2R.FormatConditions.Count).SetFirstPriority
+    With AddressLine2R.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    AddressLine2R.FormatConditions(1).StopIfTrue = False
+    
+'''City Corrections'''
+
+    'Set CityR
+    Set CityR = Range("R2:R" & LastRow)
+    
+    'CityR Replacements
+    CityR.Replace What:="la", Replacement:="Los Angeles", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="l.a.", Replacement:="Los Angeles", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    CityR.Replace What:="ny", Replacement:="New York", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="nyc", Replacement:="New York", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="n.y.c.", Replacement:="New York", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="n.y.", Replacement:="New York", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="New York City", Replacement:="New York", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    CityR.Replace What:="Sf", Replacement:="San Francisco", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    CityR.Replace What:="Hnl", Replacement:="Honolulu", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    CityR.Replace What:="T or C", Replacement:="Truth or Consequences", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    CityR.Replace What:="LÄ«huÊ»e", Replacement:="Lihue", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    CityR.Replace What:="Indpls", Replacement:="Indianapolis", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    CityR.Replace What:="Mt ", Replacement:="Mount ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="Mt.", Replacement:="Mount ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    CityR.Replace What:="Mtn ", Replacement:="Mountain ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="Mtn.", Replacement:="Mountain ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    CityR.Replace What:="St ", Replacement:="Saint ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="St.", Replacement:="Saint ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    CityR.Replace What:=" Jct", Replacement:=" Junction", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="Jct.", Replacement:=" Junction", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    CityR.Replace What:="Lk ", Replacement:="Lake ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="Lk.", Replacement:="Lake ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    CityR.Replace What:=" Twp.", Replacement:=" Township", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:=" Twp", Replacement:=" Township", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    CityR.Replace What:="N ", Replacement:="North ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="N.", Replacement:="North ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="No.", Replacement:="North ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="No ", Replacement:="North ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="S ", Replacement:="South ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="S.", Replacement:="South ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="E ", Replacement:="East ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="E.", Replacement:="East ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="W ", Replacement:="West ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="W.", Replacement:="West ", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    CityR.Replace What:=",", Replacement:="", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    CityR.Replace What:="`", Replacement:="", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    'CityR Trim
+    For Each CityV In CityR
+        If Len(CityV) > Len(WorksheetFunction.Trim(CityV)) Then
+            CityV.Value = WorksheetFunction.Trim(CityV)
+        End If
+    Next
+   
+    'CityR Highlights
+    CityR.FormatConditions.Add Type:=xlTextString, String:=",", _
+        TextOperator:=xlContains
+    CityR.FormatConditions(CityR.FormatConditions.Count).SetFirstPriority
+    With CityR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    CityR.FormatConditions(1).StopIfTrue = False
+    CityR.FormatConditions.Add Type:=xlTextString, String:="0", _
+        TextOperator:=xlContains
+    CityR.FormatConditions(CityR.FormatConditions.Count).SetFirstPriority
+    With CityR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    CityR.FormatConditions(1).StopIfTrue = False
+    CityR.FormatConditions.Add Type:=xlTextString, String:="1", _
+        TextOperator:=xlContains
+    CityR.FormatConditions(CityR.FormatConditions.Count).SetFirstPriority
+    With CityR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    CityR.FormatConditions(1).StopIfTrue = False
+    CityR.FormatConditions.Add Type:=xlTextString, String:="2", _
+        TextOperator:=xlContains
+    CityR.FormatConditions(CityR.FormatConditions.Count).SetFirstPriority
+    With CityR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    CityR.FormatConditions(1).StopIfTrue = False
+    CityR.FormatConditions.Add Type:=xlTextString, String:="3", _
+        TextOperator:=xlContains
+    CityR.FormatConditions(CityR.FormatConditions.Count).SetFirstPriority
+    With CityR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    CityR.FormatConditions(1).StopIfTrue = False
+    CityR.FormatConditions.Add Type:=xlTextString, String:="4", _
+        TextOperator:=xlContains
+    CityR.FormatConditions(CityR.FormatConditions.Count).SetFirstPriority
+    With CityR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    CityR.FormatConditions(1).StopIfTrue = False
+    CityR.FormatConditions.Add Type:=xlTextString, String:="5", _
+        TextOperator:=xlContains
+    CityR.FormatConditions(CityR.FormatConditions.Count).SetFirstPriority
+    With CityR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    CityR.FormatConditions(1).StopIfTrue = False
+    CityR.FormatConditions.Add Type:=xlTextString, String:="6", _
+        TextOperator:=xlContains
+    CityR.FormatConditions(CityR.FormatConditions.Count).SetFirstPriority
+    With CityR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    CityR.FormatConditions(1).StopIfTrue = False
+    CityR.FormatConditions.Add Type:=xlTextString, String:="7", _
+        TextOperator:=xlContains
+    CityR.FormatConditions(CityR.FormatConditions.Count).SetFirstPriority
+    With CityR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    CityR.FormatConditions(1).StopIfTrue = False
+    CityR.FormatConditions.Add Type:=xlTextString, String:="8", _
+        TextOperator:=xlContains
+    CityR.FormatConditions(CityR.FormatConditions.Count).SetFirstPriority
+    With CityR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    CityR.FormatConditions(1).StopIfTrue = False
+    CityR.FormatConditions.Add Type:=xlTextString, String:="9", _
+        TextOperator:=xlContains
+    CityR.FormatConditions(CityR.FormatConditions.Count).SetFirstPriority
+    With CityR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    CityR.FormatConditions(1).StopIfTrue = False
+    CityR.FormatConditions.Add Type:=xlTextString, String:="* * *", _
+        TextOperator:=xlContains
+    CityR.FormatConditions(CityR.FormatConditions.Count).SetFirstPriority
+    With CityR.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    CityR.FormatConditions(1).StopIfTrue = False
+    
+'''State Corrections'''
+
+    'Set StateR
+    Set StateR = Range("S2:S" & LastRow)
+    
+    'StateR Highlights
+    StateR.FormatConditions.Add Type:=xlTextString, String:="???", _
+        TextOperator:=xlContains
+    StateR.FormatConditions(StateR.FormatConditions.Count).SetFirstPriority
+    With StateR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    StateR.FormatConditions(1).StopIfTrue = False
+    
+'''ZIP Corrections'''
+
+    'Set ZipR
+    Set ZipR = Range("T2:T" & LastRow)
+    
+    'ZipR to Text Format
+    ZipR.NumberFormat = "@"
+    
+    'ZipR Correct Dropped 0's
+    For Each ZipV In ZipR
+        If Len(ZipV) < 5 Then
+            ZipV.Value = Right("0000" & Right(ZipV, Len(ZipV)), 5)
+        ElseIf Len(ZipV) > 5 And Len(ZipV) < 10 Then
+            ZipV.Value = Right("0000" & Right(ZipV, Len(ZipV)), 10)
+        End If
+    Next ZipV
+
+'''Country Corrections'''
+
+    'Set CountryR
+    Set CountryR = Range("U2:U" & LastRow)
+    
+    'CountryR Highlights
+    CountryR.FormatConditions.Add Type:=xlTextString, String:="United States", _
+        TextOperator:=xlDoesNotContain
+    CountryR.FormatConditions(CountryR.FormatConditions.Count).SetFirstPriority
+    With CountryR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    CountryR.FormatConditions(1).StopIfTrue = False
+    
+'''Occupation & Employer Corrections'''
+
+'OccupationR Replacements
+
+    'Set OccupationR
+    Set OccupationR = Range("X2:X" & LastRow)
+    
+    'OccupationR xlWhole Replace
+    OccupationR.Replace What:="rn", Replacement:="Registered Nurse", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="r.n.", Replacement:="Registered Nurse", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="it", Replacement:="IT", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="mr.", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="ms.", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="mrs.", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="mr", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="ms", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="mrs", Replacement:="", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="student", Replacement:="Student", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="college student", Replacement:="Student", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="graduate student", Replacement:="Student", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="law student", Replacement:="Student", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="doctor", Replacement:="Physician", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="md", Replacement:="Physician", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="m.d.", Replacement:="Physician", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="m d", Replacement:="Physician", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="school teacher", Replacement:="Teacher", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="Prof. Organizer", Replacement:="Professional Organizer", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="Admin Asst", Replacement:="Administrative Assistant", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="Admin. Asst.", Replacement:="Administrative Assistant", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="Mgr", Replacement:="Manager", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="Exec", Replacement:="Executive", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    
+    'OccupationR InStr Replace
+    For Each OccupationV In OccupationR
+        If InStr(OccupationV.Value, "Attorney") > 0 Then
+            OccupationV.Value = "Attorney"
+        ElseIf OccupationV.Value Like "*attorney*" Then
+            OccupationV.Value = "Attorney"
+        ElseIf InStr(OccupationV.Value, "Lawyer") > 0 Then
+            OccupationV.Value = "Attorney"
+        ElseIf OccupationV.Value Like "*lawyer*" Then
+            OccupationV.Value = "Attorney"
+        ElseIf InStr(OccupationV.Value, "Professor") > 0 Then
+            OccupationV.Value = "Professor"
+        ElseIf OccupationV.Value Like "*professor*" Then
+            OccupationV.Value = "Professor"
+        End If
+    Next OccupationV
+    
+    'OccupationR xlPart Replace
+    OccupationR.Replace What:="'", Replacement:="", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="ceo", Replacement:="CEO", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="cfo", Replacement:="CFO", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="vp", Replacement:="Vice President", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="businessman", Replacement:="Executive", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="exec ", Replacement:="Executive", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:=" it ", Replacement:=" IT ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="/", Replacement:=" & ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="&", Replacement:=" & ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:=" Mgr ", Replacement:=" Manager ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:=" Rep.", Replacement:=" Representative", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="Rep. ", Replacement:="Representative ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationR.Replace What:="n  &  a", Replacement:="Not Employed", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+'EmployerR Replacements
+
+    'Set EmployerR
+    Set EmployerR = Range("Y2:Y" & LastRow)
+    
+    'EmployerR xlWhole Replace
+    EmployerR.Replace What:="P&G", Replacement:="Procter & Gamble", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    EmployerR.Replace What:="Procter and Gamble", Replacement:="Procter & Gamble", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    'EmployerR InStr Replace
+    
+    'EmployerR xlPart Replace
+    EmployerR.Replace What:=" inc", Replacement:=" Inc", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    EmployerR.Replace What:=" inc.", Replacement:=" Inc", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    EmployerR.Replace What:=", inc.", Replacement:=" Inc", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    EmployerR.Replace What:=", inc", Replacement:=" Inc", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    EmployerR.Replace What:=" Inc", Replacement:=" Inc.", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=True, SearchFormat:=False, _
+        ReplaceFormat:=False
+    EmployerR.Replace What:=", llc", Replacement:=" LLC", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    EmployerR.Replace What:="*,llc*", Replacement:=" LLC", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    EmployerR.Replace What:=" llc", Replacement:=" LLC", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    EmployerR.Replace What:=", lllc", Replacement:=" LLLC", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    EmployerR.Replace What:=" lllc", Replacement:=" LLLC", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    EmployerR.Replace What:=" Llp", Replacement:=" LLP", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    EmployerR.Replace What:="U of ", Replacement:="University of ", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+'OccupationEmployerR Replacements
+    
+    'Set OccupationEmployerR
+    Set OccupationEmployerR = Union(OccupationR, EmployerR)
+
+    'OccupationEmployerR xlWhole Replace
+    OccupationEmployerR.Replace What:="none", Replacement:="Not Employed", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="not employed", Replacement:="Not Employed", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="""not employed""", Replacement:="Not Employed", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="""none""", Replacement:="Not Employed", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="nnoneone", Replacement:="Not Employed", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="n/a", Replacement:="Not Employed", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="disabled", Replacement:="Not Employed", LookAt:=xlWhole _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="self", Replacement:="Self-Employed", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="self employed", Replacement:="Self-Employed", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="self employeed", Replacement:="Self-Employed", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="self employes", Replacement:="Self-Employed", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="nonnonee", Replacement:="Not Employed", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="nonenone", Replacement:="Not Employed", LookAt:=xlWhole, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    'OccupationEmployerR InStr Replace
+    For Each OccupationEmployerV In OccupationEmployerR
+        If InStr(OccupationEmployerV.Value, "Selfemployed") > 0 Then
+            OccupationEmployerV.Value = "Self-Employed"
+        ElseIf OccupationEmployerV.Value Like "*selfemployed*" Then
+            OccupationEmployerV.Value = "Self-Employed"
+        ElseIf InStr(OccupationEmployerV.Value, "Self Employed") > 0 Then
+            OccupationEmployerV.Value = "Self-Employed"
+        ElseIf OccupationEmployerV.Value Like "*self Employed*" Then
+            OccupationEmployerV.Value = "Self-Employed"
+        ElseIf InStr(OccupationEmployerV.Value, "Self-employed") > 0 Then
+            OccupationEmployerV.Value = "Self-Employed"
+        ElseIf OccupationEmployerV.Value Like "*self-employed*" Then
+            OccupationEmployerV.Value = "Self-Employed"
+        ElseIf InStr(OccupationEmployerV.Value, "Self- Employed") > 0 Then
+            OccupationEmployerV.Value = "Self-Employed"
+            
+        ElseIf InStr(OccupationEmployerV.Value, "Housewife") > 0 Then
+            OccupationEmployerV.Value = "Homemaker"
+        ElseIf InStr(OccupationEmployerV.Value, "House Wife") > 0 Then
+            OccupationEmployerV.Value = "Homemaker"
+        ElseIf OccupationEmployerV.Value Like "*housewife*" Then
+            OccupationEmployerV.Value = "Homemaker"
+        ElseIf InStr(OccupationEmployerV.Value, "Homemaker") > 0 Then
+            OccupationEmployerV.Value = "Homemaker"
+        ElseIf InStr(OccupationEmployerV.Value, "Home Maker") > 0 Then
+            OccupationEmployerV.Value = "Homemaker"
+        ElseIf OccupationEmployerV.Value Like "*homemaker*" Then
+            OccupationEmployerV.Value = "Homemaker"
+            
+        ElseIf InStr(OccupationEmployerV.Value, "Unemployed") > 0 Then
+            OccupationEmployerV.Value = "Not Employed"
+        ElseIf OccupationEmployerV.Value Like "*unemployed*" Then
+            OccupationEmployerV.Value = "Not Employed"
+            
+        ElseIf InStr(OccupationEmployerV.Value, "Retired") > 0 Then
+            OccupationEmployerV.Value = "Retired"
+        ElseIf OccupationEmployerV.Value Like "*retired*" Then
+            OccupationEmployerV.Value = "Retired"
+            
+        ElseIf InStr(OccupationEmployerV.Value, "Retiree") > 0 Then
+            OccupationEmployerV.Value = "Retired"
+        ElseIf OccupationEmployerV.Value Like "*retiree*" Then
+            OccupationEmployerV.Value = "Retired"
+        End If
+    Next OccupationEmployerV
+    
+    'OccupationEmployerR xlPart Replace
+    OccupationEmployerR.Replace What:="unemployed", Replacement:="Not Employed", LookAt:=xlPart _
+        , SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    OccupationEmployerR.Replace What:="..", Replacement:=".", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+        
+    'OccupationEmployerR Trim
+    For Each OccupationEmployerV In OccupationEmployerR
+        If Len(OccupationEmployerV) > Len(WorksheetFunction.Trim(OccupationEmployerV)) Then
+            OccupationEmployerV.Value = WorksheetFunction.Trim(OccupationEmployerV)
+        End If
+    Next OccupationEmployerV
+    
+'OccupationR & EmployerR Column Matching
+    
+    'OccupationR Column Match
+
+    For OccupationL = 2 To LastRow
+        If Range("Y" & OccupationL).Value = "Retired" Then
+            Range("X" & OccupationL).Value = "Retired"
+        End If
+    Next OccupationL
+
+    'EmployerR Column Match
+
+    For EmployerL = 2 To LastRow
+        If Range("X" & EmployerL).Value = "Retired" Or Range("X" & EmployerL).Value = "Student" Then
+            Range("Y" & EmployerL).Value = "Not Employed"
+        ElseIf Range("X" & EmployerL).Value = "Self-Employed" And Range("Y" & EmployerL).Value = "Self-Employed" Then
+            Range("X" & EmployerL).Value = ""
+            Range("Y" & EmployerL).Value = ""
+        ElseIf Range("X" & EmployerL).Value = "Self-Employed" And Range("Y" & EmployerL).Value = "Not Employed" Then
+            Range("X" & EmployerL).Value = "Not Employed"
+            Range("Y" & EmployerL).Value = "Not Employed"
+        ElseIf Range("X" & EmployerL).Value = "Not Employed" And Range("Y" & EmployerL).Value = "Self-Employed" Then
+            Range("X" & EmployerL).Value = "Not Employed"
+            Range("Y" & EmployerL).Value = "Not Employed"
+        End If
+    Next EmployerL
+            
+'OccupationR, EmployerR & OccupationEmployerR Highlights
+
+    'OccupationR Highlights
+    OccupationR.FormatConditions.Add Type:=xlTextString, String:="not", _
+        TextOperator:=xlContains
+    OccupationR.FormatConditions(OccupationR.FormatConditions.Count).SetFirstPriority
+    With OccupationR.FormatConditions(1).Interior
+        .Color = vbGreen
+    End With
+    OccupationR.FormatConditions(1).StopIfTrue = False
+    OccupationR.FormatConditions.Add Type:=xlTextString, String:="ret", _
+        TextOperator:=xlContains
+    OccupationR.FormatConditions(OccupationR.FormatConditions.Count).SetFirstPriority
+    With OccupationR.FormatConditions(1).Interior
+        .Color = vbRed
+    End With
+    OccupationR.FormatConditions(1).StopIfTrue = False
+    OccupationR.FormatConditions.Add Type:=xlTextString, String:="student", _
+        TextOperator:=xlContains
+    OccupationR.FormatConditions(OccupationR.FormatConditions.Count).SetFirstPriority
+    With OccupationR.FormatConditions(1).Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent6
+        .TintAndShade = 0.399975585192419
+        .PatternTintAndShade = 0
+    End With
+    OccupationR.FormatConditions(1).StopIfTrue = False
+    OccupationR.FormatConditions.Add Type:=xlTextString, String:="college", _
+        TextOperator:=xlContains
+    OccupationR.FormatConditions(OccupationR.FormatConditions.Count).SetFirstPriority
+    With OccupationR.FormatConditions(1).Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent6
+        .TintAndShade = 0.399975585192419
+        .PatternTintAndShade = 0
+    End With
+    OccupationR.FormatConditions(1).StopIfTrue = False
+    OccupationR.FormatConditions.Add Type:=xlTextString, String:="professor of", _
+        TextOperator:=xlContains
+    OccupationR.FormatConditions(OccupationR.FormatConditions.Count).SetFirstPriority
+    With OccupationR.FormatConditions(1).Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent6
+        .TintAndShade = 0.399975585192419
+        .PatternTintAndShade = 0
+    End With
+    OccupationR.FormatConditions(1).StopIfTrue = False
+    OccupationR.FormatConditions.Add Type:=xlTextString, String:="pt", _
+        TextOperator:=xlContains
+    OccupationR.FormatConditions(OccupationR.FormatConditions.Count).SetFirstPriority
+    With OccupationR.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    OccupationR.FormatConditions(1).StopIfTrue = False
+    OccupationR.FormatConditions.Add Type:=xlTextString, String:="part time", _
+        TextOperator:=xlContains
+    OccupationR.FormatConditions(OccupationR.FormatConditions.Count).SetFirstPriority
+    With OccupationR.FormatConditions(1).Interior
+        .Color = vbCyan
+    End With
+    OccupationR.FormatConditions(1).StopIfTrue = False
+    
+    'EmployerR Highlights
+    EmployerR.FormatConditions.Add Type:=xlTextString, String:="not", _
+        TextOperator:=xlContains
+    EmployerR.FormatConditions(EmployerR.FormatConditions.Count).SetFirstPriority
+    With EmployerR.FormatConditions(1).Interior
+        .Color = vbGreen
+    End With
+    EmployerR.FormatConditions(1).StopIfTrue = False
+    EmployerR.FormatConditions.Add Type:=xlTextString, String:="ret", _
+        TextOperator:=xlContains
+    EmployerR.FormatConditions(EmployerR.FormatConditions.Count).SetFirstPriority
+    With EmployerR.FormatConditions(1).Interior
+        .Color = vbRed
+    End With
+    EmployerR.FormatConditions(1).StopIfTrue = False
+    EmployerR.FormatConditions.Add Type:=xlTextString, String:="n/a", _
+        TextOperator:=xlContains
+    EmployerR.FormatConditions(EmployerR.FormatConditions.Count).SetFirstPriority
+    With EmployerR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    EmployerR.FormatConditions(1).StopIfTrue = False
+    
+    'OccupationEmployerR Highlights
+     OccupationEmployerR.FormatConditions.Add Type:=xlTextString, String:="self", _
+        TextOperator:=xlContains
+    OccupationEmployerR.FormatConditions(OccupationEmployerR.FormatConditions.Count).SetFirstPriority
+    With OccupationEmployerR.FormatConditions(1).Interior
+        .Color = vbMagenta
+    End With
+    OccupationEmployerR.FormatConditions(1).StopIfTrue = False
+    OccupationEmployerR.FormatConditions.Add Type:=xlTextString, String:="unem", _
+        TextOperator:=xlContains
+    OccupationEmployerR.FormatConditions(OccupationEmployerR.FormatConditions.Count).SetFirstPriority
+    With OccupationEmployerR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    OccupationEmployerR.FormatConditions(1).StopIfTrue = False
+    OccupationEmployerR.FormatConditions.Add Type:=xlTextString, String:="wife", _
+        TextOperator:=xlContains
+    OccupationEmployerR.FormatConditions(OccupationEmployerR.FormatConditions.Count).SetFirstPriority
+    With OccupationEmployerR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    OccupationEmployerR.FormatConditions(1).StopIfTrue = False
+    OccupationEmployerR.FormatConditions.Add Type:=xlTextString, String:="disa", _
+        TextOperator:=xlContains
+    OccupationEmployerR.FormatConditions(OccupationEmployerR.FormatConditions.Count).SetFirstPriority
+    With OccupationEmployerR.FormatConditions(1).Interior
+        .Color = vbYellow
+    End With
+    OccupationEmployerR.FormatConditions(1).StopIfTrue = False
+
+'''Email Corrections'''
+
+    'EmailR Remove Incorrect Addresses
+    Set EmailR = Range("Z2:Z" & LastRow)
+    
+    For Each EmailV In EmailR
+    If EmailV.Value = "none@none.com" Then
+        EmailV.Value = ""
+    ElseIf EmailV.Value = "none@gmail.com" Then
+        EmailV.Value = ""
+    End If
+    Next EmailV
+    
+'''Phone Corrections'''
+
+    'Set PhoneR
+    Set PhoneR = Range("AA2:AA" & LastRow)
+    
+    'PhoneR Remove Non-Numeric Characters
+    On Error Resume Next
+    For Each PhoneR1 In PhoneR
+    xOut = ""
+    For I = 1 To Len(PhoneR1.Value)
+        xTemp = Mid(PhoneR1.Value, I, 1)
+        If xTemp Like "[0-9]" Then
+            xStr = xTemp
+        Else
+            xStr = ""
+        End If
+        xOut = xOut & xStr
+    Next I
+    PhoneR1.Value = xOut
+    Next
+
+    'PhoneR Remove Incorrect Numbers
+    For Each PhoneV In PhoneR
+    If Len(PhoneV.Value) < 10 Then
+        PhoneV.Value = ""
+    Else
+    If Len(PhoneV.Value) = 11 And Left(PhoneV.Value, 1) = "1" Then
+        PhoneV.Value = Right(PhoneV.Value, 10)
+    Else
+    If Len(PhoneV.Value) >= 11 And Left(PhoneV.Value, 1) <> "1" Then
+        PhoneV.Value = ""
+    Else
+    If PhoneV.Value = "5555555555" Then
+        PhoneV.Value = ""
+    End If
+    End If
+    End If
+    End If
+    Next PhoneV
+    
+    'PhoneR Format
+    PhoneNumberR.Select
+    Selection.NumberFormat = "[<=9999999]###-####;(###) ###-####"
+
+    
+''' CHOOSE BETWEEN FEDERAL AND NON-FEDERAL SETUP
+    
+ Dim ResponseS As String
+    ResponseS = InputBox("Is this Federal or Non-Federal Data?", "ActBlue Program")
+    If ResponseS = "Federal" Then
+        Call fedModule
+    Else
+    If ResponseS = "Non-Federal" Then
+        Call nonfedModule
+End If
+End If
+
+End Sub
+
+    
+
+'Sub bNGP2Module()
+    
+''' this is the option if you want to toggle between NGP formats. I've commented it out, since we're only using NGP2 for now.
+'''Dialog Box to New NGP, Old NGP, Well&Lighthouse'''
+
+    'Dim ResponseS As String
+    'ResponseS = InputBox("Should this ActBlue be formatted for NGP1, NGP2, or Well&Lighthouse(WL)", "ActBlue Program")
+    'If ResponseS = "NGP2" Then
+        'Call bNGP2Module
+    'Else
+    'If ResponseS = "NGP1" Then
+        'Call cNGP1Module
+    'Else
+    'If ResponseS = "WL" Then
+        'Call dWellLighthouseModule
+   ' End If
+    'End If
+    'End If
+'End Sub
+
+''' This is the module for federal formatting for actblue data
+Sub fedModule()
+
+               '''''New NGP'''''
+                
+'Denote Ranges & Variables
+
+      Dim ContributionTypeR As Range
+    Dim MethodR As Range
+    Dim PhoneTypeR As Range
+    Dim EmailTypeR As Range
+    Dim AddressTypeR As Range
+    
+    Dim BatchR As Range
+    Dim PeriodR As Range
+    Dim CycleR As Range
+    Dim LinkToContactR As Range
+    
+    'Determine LastRow of Data
+    Dim LastRow As Long
+    LastRow = ActiveSheet.Range("A" & Rows.Count).End(xlUp).Row
+    
+'Delete Columns
+
+    Columns("AX:BV").Delete
+    Columns("AF:AV").Delete
+    Columns("AC").Delete
+    Columns("AB").Delete
+    Columns("D:J").Delete
+    Columns("X:AR").Delete
+    
+'Rename Columns
+
+    Range("$A$1").Value = "Reciept ID"
+    Range("$B$1").Value = "Date Received"
+    Range("$D$1").Value = "First Name"
+    Range("$E$1").Value = "Middle Name"
+    Range("$F$1").Value = "Last Name"
+    Range("$I$1").Value = "Address Line 1"
+    Range("$J$1").Value = "Address Line 2"
+    Range("$K$1").Value = "City"
+    Range("$L$1").Value = "State"
+    Range("$S$1").Value = "Email Address"
+    Range("$T$1").Value = "Phone Number"
+    Range("$U$1").Value = "Check Number"
+    Range("$V$1").Value = "Check Date"
+    Range("$W$1").Value = "Line Item ID"
+    Range("$X$1").Value = "Batch"
+    Range("$Y$1").Value = "Period"
+    Range("$Z$1").Value = "Cycle"
+    Range("$AA$1").Value = "Link to Contact"
+    Range("$AB$1").Value = "Bank Account"
+    Range("$AC$1").Value = "Deposit Number"
+    Range("$AD$1").Value = "Date Received By Transmitting Committee"
+    
+    
+      
+    'Set ContributionTypeR, MethodR, PhoneTypeR, EmailTypeR, AddressTypeR
+    Set ContributionTypeR = Range("AE2:AE" & LastRow)
+    Set MethodR = Range("AF2:AF" & LastRow)
+   
+    
+    'Standard Column Headers
+    Range("$AE$1").Value = "Contribution Type"
+    Range("$AF$1").Value = "Method"
+   
+        
+    'Fill ContributionTypeR, MethodR, PhoneTypeR, EmailTypeR, AddressTypeR
+    ContributionTypeR.Value = "Earmarked Monetary Contribution"
+    MethodR.Value = "Credit Card"
+  
+
+    
+'''Input Boxes'''
+
+    'Set BatchR
+    Set BatchR = Range("X2:X" & LastRow)
+    
+    'Input Box: Batch
+    Dim Batch As String
+    Batch = InputBox("Batch #:", "Batch #")
+    If Batch <> "" Then
+        Range("X2:X" & LastRow).Value = Batch
+    End If
+    
+    
+    
+    'Set CycleR
+    Set CycleR = Range("Z2:Z" & LastRow)
+    
+    'Input Box: Cycle
+    Dim Cycle As String
+    Cycle = InputBox("Cycle:", "Cycle")
+    If Cycle <> "" Then
+        Range("Z2:Z" & LastRow).Value = Cycle
+    End If
+    
+    'Set linktocontactR
+    Set LinkToContactR = Range("AA2:AA" & LastRow)
+    
+    'Input Box: linktocontact
+    Dim LinkToContact As String
+    LinkToContact = InputBox("Link To Contact:", "Link To Contact")
+    If LinkToContact <> "" Then
+        Range("AA2:AA" & LastRow).Value = LinkToContact
+    End If
+    
+     'Set bankaccountR
+    Set bankaccountR = Range("AB2:AB" & LastRow)
+    
+    'Input Box: Bank Account
+    Dim BankAccount As String
+    BankAccount = InputBox("Bank Account #:", "Bank Account")
+    If BankAccount <> "" Then
+        Range("AB2:AB" & LastRow).Value = BankAccount
+    End If
+    
+    'Set depositnumberR
+    Set depositnumberR = Range("AC2:AC" & LastRow)
+    
+    'Input Box: Deposit Number
+    Dim DepositNumber As String
+    DepositNumber = InputBox("Deposit Number:", "Deposit Number")
+    If DepositNumber <> "" Then
+        Range("AC2:AC" & LastRow).Value = DepositNumber
+    End If
+    
+    
+    'delete all the columns chene wants gone.
+    
+    Columns("V").EntireColumn.Delete
+    Columns("P").Delete
+    Columns("O").Delete
+    Columns("H").Delete
+    
+    
+    
+    
+    Set datecheckrecievedR = Range("B2:B" & LastRow)
+    Set daterecievedbyTrasmitR = Range("Z2:Z" & LastRow)
+    datecheckrecievedR.Copy
+    daterecievedbyTrasmitR.Select
+    ActiveSheet.Paste
+    
+    
+    Set daterecievedR = Range("B2:B" & LastRow)
+    Set checkDateR = Range("S2:S" & LastRow)
+    checkDateR.Copy
+    daterecievedR.Select
+    ActiveSheet.Paste
+ 
+
+
+    
+    'Column Width
+    Cells.Select
+    Cells.EntireColumn.AutoFit
+
+End Sub
+    
+ 
+''' this is the module for formatting non-federal actblue data
+Sub nonfedModule()
+
+                '''''New NGP'''''
+                
+'Denote Ranges & Variables
+
+    Dim ContributionTypeR As Range
+    Dim MethodR As Range
+    Dim PhoneTypeR As Range
+    Dim EmailTypeR As Range
+    Dim AddressTypeR As Range
+    
+    Dim BatchR As Range
+    Dim PeriodR As Range
+    Dim CycleR As Range
+    Dim LinkToContactR As Range
+    
+    'Determine LastRow of Data
+    Dim LastRow As Long
+    LastRow = ActiveSheet.Range("A" & Rows.Count).End(xlUp).Row
+    
+'Delete Columns
+
+    Columns("AX:BV").Delete
+    Columns("AF:AV").Delete
+    Columns("AC").Delete
+    Columns("AB").Delete
+    Columns("D:J").Delete
+    Columns("X:AR").Delete
+    
+'Rename Columns
+
+    Range("$A$1").Value = "Reciept ID"
+    Range("$B$1").Value = "Date Received"
+    Range("$D$1").Value = "First Name"
+    Range("$E$1").Value = "Middle Name"
+    Range("$F$1").Value = "Last Name"
+    Range("$I$1").Value = "Address Line 1"
+    Range("$J$1").Value = "Address Line 2"
+    Range("$K$1").Value = "City"
+    Range("$L$1").Value = "State"
+    Range("$S$1").Value = "Email Address"
+    Range("$T$1").Value = "Phone Number"
+    Range("$U$1").Value = "Check Number"
+    Range("$V$1").Value = "Check Date"
+    Range("$W$1").Value = "Line Item ID"
+    Range("$X$1").Value = "Batch"
+    Range("$Y$1").Value = "Period"
+    Range("$Z$1").Value = "Cycle"
+    Range("$AA$1").Value = "Link to Contact"
+    Range("$AB$1").Value = "Bank Account"
+    Range("$AC$1").Value = "Deposit Number"
+    
+      'Set ContributionTypeR, MethodR, PhoneTypeR, EmailTypeR, AddressTypeR
+    Set ContributionTypeR = Range("AD2:AD" & LastRow)
+    Set MethodR = Range("AE2:AE" & LastRow)
+    
+    
+    'Standard Column Headers
+    Range("$AD$1").Value = "Contribution Type"
+    Range("$AE$1").Value = "Method"
+  
+        
+    'Fill ContributionTypeR, MethodR, PhoneTypeR, EmailTypeR, AddressTypeR
+    ContributionTypeR.Value = "Monetary Contribution"
+    MethodR.Value = "Credit Card"
+
+    
+'''Input Boxes'''
+
+    'Set BatchR
+    Set BatchR = Range("X2:X" & LastRow)
+    
+    'Input Box: Batch
+    Dim Batch As String
+    Batch = InputBox("Batch #:", "Batch #")
+    If Batch <> "" Then
+        Range("X2:X" & LastRow).Value = Batch
+    End If
+    
+    'We don't set a range for period, since we'll delete it later
+    
+    'Set CycleR
+    Set CycleR = Range("Z2:Z" & LastRow)
+    
+    'Input Box: Cycle
+    Dim Cycle As String
+    Cycle = InputBox("Cycle:", "Cycle")
+    If Cycle <> "" Then
+        Range("Z2:Z" & LastRow).Value = Cycle
+    End If
+    
+    
+     'Set bankaccountR
+    Set bankaccountR = Range("AB2:AB" & LastRow)
+    
+    'Input Box: Bank Account
+    Dim BankAccount As String
+    BankAccount = InputBox("Bank Account #:", "Bank Account")
+    If BankAccount <> "" Then
+        Range("AB2:AB" & LastRow).Value = BankAccount
+    End If
+    
+    'Set depositnumberR
+    Set depositnumberR = Range("AC2:AC" & LastRow)
+    
+    'Input Box: Deposit Number
+    Dim DepositNumber As String
+    DepositNumber = InputBox("Deposit Number:", "Deposit Number")
+    If DepositNumber <> "" Then
+        Range("AC2:AC" & LastRow).Value = DepositNumber
+    End If
+    
+    
+    'delete all the columns chene wants gone.
+    
+    Columns("AA").EntireColumn.Delete
+    Columns("Y").EntireColumn.Delete
+    Columns("P").Delete
+    Columns("O").Delete
+    Columns("H").Delete
+    
+    
+   Set daterecievedR = Range("B2:B" & LastRow)
+    Set checkDateR = Range("S2:S" & LastRow)
+    checkDateR.Copy
+    daterecievedR.Select
+    ActiveSheet.Paste
+
+
+    
+    'Column Width
+    Cells.Select
+    Cells.EntireColumn.AutoFit
+
+End Sub
+
+''' this is the module for NGP1 and DwellLighthouse. I doubt theyll be needed again, but am keeping them in for posterity.
+'Sub cNGP1Module()
+
+                '''''Old NGP'''''
+
+    'Determine LastRow of Data
+    'Dim LastRow As Long
+   ' LastRow = ActiveSheet.Range("A" & Rows.Count).End(xlUp).Row
+    
+'Delete Columns
+
+    'Columns("AF:BV").Delete
+    'Columns("AB:AD").Delete
+    'Columns("D:J").Delete
+    'Columns("A").Delete
+    'Columns("M").Delete
+   
+'Rename Columns
+    
+    'Range("$A$1").Value = "Contrib_Date2"
+    'Range("$B$1").Value = "Contrib_Amount"
+    'Range("$C$1").Value = "FirstName"
+    'Range("$D$1").Value = "Middle"
+    'Range("$E$1").Value = "LastName"
+    'Range("$F$1").Value = "Suffix"
+    'Range("$G$1").Value = "Address (Unedited)"
+    'Range("$H$1").Value = "Address1"
+    'Range("$I$1").Value = "Address2"
+    'Range("$J$1").Value = "City"
+    'Range("$K$1").Value = "State"
+    'Range("$L$1").Value = "ZIP"
+    'Range("$M$1").Value = "Occupation (Unedited)"
+    'Range("$N$1").Value = "Employer (Unedited)"
+    'Range("$O$1").Value = "Occupation"
+    'Range("$P$1").Value = "Employer"
+    'Range("$Q$1").Value = "Email"
+    'Range("$R$1").Value = "Homephone"
+    'Range("$S$1").Value = "Contrib_Date"
+    
+    'Reorder Columns
+    'Columns("S:S").Select
+    'Selection.Cut
+    'Columns("A:A").Select
+    'Selection.Insert Shift:=xlToRight
+    
+    'Column Width
+    'Cells.Select
+    'Cells.EntireColumn.AutoFit
+   
+'End Sub
+'Sub dWellLighthouseModule()
+
+                '''''Well & Lighthouse'''''
+                
+    'Determine LastRow of Data
+    'Dim LastRow As Long
+    'LastRow = ActiveSheet.Range("A" & Rows.Count).End(xlUp).Row
+    
+'Insert Contrib_Date
+
+    'Range("$B$1").EntireColumn.Insert
+    'Range("$B$1").Value = "Contrib_Date"
+    
+    'Range("AF2:AF" & LastRow).Copy
+    'Range("B2:B" & LastRow).Select
+    'ActiveSheet.Paste
+    
+'Rename Columns
+
+    'Range("$C$1").Value = "Contrib_Date2"
+    'Range("$D$1").Value = "Contrib_Amount"
+    'Range("$L$1").Value = "FirstName"
+    'Range("$M$1").Value = "Middle"
+    'Range("$N$1").Value = "LastName"
+    'Range("$O$1").Value = "Suffix"
+    'Range("$Q$1").Value = "Address1"
+    'Range("$R$1").Value = "Address2"
+    'Range("$S$1").Value = "City"
+    'Range("$T$1").Value = "State"
+    'Range("$U$1").Value = "ZIP"
+    'Range("$V$1").Value = "Country"
+    'Range("$Y$1").Value = "Occupation"
+    'Range("$Z$1").Value = "Employer"
+    'Range("$AA$1").Value = "Email"
+    'Range("$AB$1").Value = "Homephone"
+    'Range("$AF$1").Value = "Check Date"
+
+    'Column Width
+    'Cells.Select
+    'Cells.EntireColumn.AutoFit
+    
+'End Sub
